@@ -1,0 +1,117 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Socket.IO chat</title>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      body { font: 13px Helvetica, Arial; }
+      form { background: #000; padding: 3px; position: fixed; bottom: 0; width: 100%; }
+      form input { border: 0; padding: 10px; width: 90%; margin-right: .5%; }
+      form button { width: 9%; background: rgb(130, 224, 255); border: none; padding: 10px; }
+      #messages { list-style-type: none; margin: 0; padding: 0; }
+      #messages li { padding: 5px 10px; }
+      #messages li:nth-child(odd) { background: #eee; }
+    </style>
+  </head>
+  <body>
+    <ul id="messages"></ul>
+    <form action="">
+      <input id="m" autocomplete="off" /><button>Send</button>
+    </form>
+
+    <!--<script src="/socket.io/socket.io.js"></script>-->
+    <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
+    <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+    <script>
+      var socket = io();
+      $('form').submit(function(){
+        socket.emit('chat message', $('#m').val());
+        $('#m').val('');
+        return false;
+      });
+
+      socket.on('chat message', function(msg){
+        $('#messages').append($('<li>').text(msg));
+      });
+
+      socket.on('move forward', function(msg){
+        $('#messages').append($('<li>').text('move forward'));
+      });
+
+      socket.on('move back', function(msg){
+        $('#messages').append($('<li>').text('move back'));
+      });
+
+      socket.on('turn left', function(msg){
+        $('#messages').append($('<li>').text('turn left'));
+      });
+
+      socket.on('turn right', function(msg){
+        $('#messages').append($('<li>').text('turn right'));
+      });
+
+      socket.on('pan up', function(msg){
+        $('#messages').append($('<li>').text('pan up'));
+      });
+
+      socket.on('pan down', function(msg){
+        $('#messages').append($('<li>').text('pan down'));
+      });
+
+      socket.on('pan left', function(msg){
+        $('#messages').append($('<li>').text('pan left'));
+      });
+
+      socket.on('pan right', function(msg){
+        $('#messages').append($('<li>').text('pan right'));
+      });
+
+      socket.on('fire', function(msg){
+        $('#messages').append($('<li>').text('fire!'));
+      });
+
+      $(document).keydown(function(e) {
+        switch(e.which) {
+            case 37: // left
+            socket.emit('left');
+            break;
+
+            case 38: // up
+            socket.emit('up');
+            break;
+
+            case 39: // right
+            socket.emit('right');
+            break;
+
+            case 40: // down
+            socket.emit('down');
+            break;
+
+            case 65: // A
+            socket.emit('panleft');
+            break;
+
+            case 87: // W
+            socket.emit('panup');
+            break;
+
+            case 68: // D
+            socket.emit('panright');
+            break;
+
+            case 83: // S
+            socket.emit('pandown');
+            break;
+
+            case 32: // space
+            socket.emit('space');
+            break;
+
+            default: return; // exit this handler for other keys
+        }
+        e.preventDefault(); // prevent the default action (scroll / move caret)
+      });
+    </script>
+  </body>
+</html>
